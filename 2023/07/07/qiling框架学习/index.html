@@ -1,5 +1,297 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="X-UA-Compatible" content="IE=edge"><title> qiling框架学习 · Hexo</title><meta name="description" content="qiling框架学习 - John Doe"><meta name="viewport" content="width=device-width, initial-scale=1"><link rel="icon" href="/favicon.ico"><link rel="stylesheet" href="/css/prontera.css"><link rel="search" type="application/opensearchdescription+xml" href="http://example.com/atom.xml" title="Hexo"><meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-</head><body><header class="feature-header"><nav class="component-nav"><ul><div class="logo-container"><a href="/"><h2 class="title">Hexo</h2></a></div><a href="/" target="_self" class="li component-nav-item"><p>INDEX</p></a><a href="/archives" target="_self" class="li component-nav-item"><p>ARCHIVES</p></a><ul class="shortcut-icons"><a href="https://lindll.github.io/" target="_blank"><img src="/images/github.svg" class="icon"></a><a href="/atom.xml" target="_blank"><img src="/images/rss.svg" class="icon"></a></ul></ul></nav></header><main class="container"><div id="post-container"><div class="post"><article class="post-block"><h1 class="post-title">qiling框架学习</h1><div class="post-info">Jul 7, 2023</div><div class="post-content"><p><strong>Qiling是一款功能强大的高级代码模拟框架</strong></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-siteapp">
+    <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+    
+    <meta name="referrer" content="no-referrer-when-downgrade">
+    
+    <meta name="renderer" content="webkit"/>
+    <meta name="force-rendering" content="webkit"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <script>if (/*@cc_on!@*/false || (!!window.MSInputMethodContext && !!document.documentMode)) window.location.href="https://support.dmeng.net/upgrade-your-browser.html?referrer="+encodeURIComponent(window.location.href); </script>
+    
+    
+        <link rel="preload" crossorigin="crossorigin" href="/fonts/roboto/Roboto-Regular.woff2" as="font">
+        <link rel="preload" crossorigin="crossorigin" href="/fonts/roboto/Roboto-Bold.woff2" as="font">
+    
+    
+    
+        <link rel="shortcut icon" href="/icons/favicon.ico">
+    
+
+    
+    
+        
+<link rel="stylesheet" href="/css/mdui.min.v1.0.0.css">
+
+    
+    
+<link rel="stylesheet" href="/css/main.css">
+<link rel="stylesheet" href="/css/iconfont.css">
+
+
+    
+    
+
+    
+        <script data-ad-client="ca-" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+    
+
+
+
+
+
+
+
+
+
+
+
+
+          
+
+
+    
+    
+    <title>
+        
+            qiling框架学习 | Hexo
+        
+    </title>
+    
+    
+<meta name="generator" content="Hexo 6.3.0"><link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
+</head>
+<body class="mdui-drawer-body-left mdui-appbar-with-toolbar mdui-theme-primary-teal mdui-theme-accent-blue">
+  
+  <header class="mdui-appbar mdui-appbar-fixed">
+  <div id="toolbar" class="mdui-toolbar mdui-color-theme">
+    <button class="mdui-btn mdui-btn-icon" mdui-drawer="{target: '#sidebar', swipe: true}"><i class="iconfont icon-menu"></i></button>
+    <a href="/" class="mdui-typo-headline">Hexo</a>
+    <a href="/" class="header-subtitle mdui-typo-headline"></a>
+    <div class="mdui-toolbar-spacer"></div>
+    <button class="mdui-btn mdui-btn-icon" mdui-dialog="{target: '#search'}" mdui-tooltip="{content: 'search'}"><i class="iconfont icon-search"></i></button>
+  </div>
+</header>
+
+<div class="mdui-dialog" id="search">
+  
+    <div class="search-form">
+      <input type="search" class="search-form-input" placeholder="请输入关键字" onfocus="listenSearchFunc()">
+    </div>
+    <div class="search-result" data-resource="/search.xml"></div>
+  
+</div>
+
+  <aside id="sidebar" class="mdui-drawer">
+    <div class="mdui-tab" mdui-tab>
+        <a href="#sidebar-tab1" id="sidebartab" class="mdui-ripple mdui-tab-active">Overview</a>
+        <a href="#sidebar-tab2" id="sidebartab" class="mdui-ripple">About</a>
+    </div>
+
+    
+    <div id="sidebar-tab1" class="mdui-p-a-1">
+        <div class="mdui-list">
+            
+                
+                <a href="/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-home"></i>
+                    </div>
+                    <div class="mdui-list-item-content">Home</div>
+                </a>
+            
+                
+                <a href="/tags/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-bookmark"></i>
+                    </div>
+                    <div class="mdui-list-item-content">Tags</div>
+                </a>
+            
+                
+                <a href="/categories/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-folder"></i>
+                    </div>
+                    <div class="mdui-list-item-content">Categories</div>
+                </a>
+            
+                
+                <a href="/archives/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-archive"></i>
+                    </div>
+                    <div class="mdui-list-item-content">Archives</div>
+                </a>
+            
+                
+                <a href="/tools/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-tools"></i>
+                    </div>
+                    <div class="mdui-list-item-content">工具箱</div>
+                </a>
+            
+                
+                <a href="/about/" class="mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-user"></i>
+                    </div>
+                    <div class="mdui-list-item-content">About</div>
+                </a>
+            
+            <div class="mdui-list-item mdui-ripple">
+                <div class="mdui-list-item-icon">
+                    <i class="iconfont icon-moon"></i>
+                </div>
+                <div class="mdui-list-item-content">Night Mode</div>
+                <label class="mdui-switch" id="darkmode">
+                  <input type="checkbox" id="nightmode_switch"/>
+                  <i class="mdui-switch-icon"></i>
+                </label>
+            </div>           
+        </div>
+    </div>
+
+    
+    <div id="sidebar-tab2" class="mdui-p-a-1">
+        <div class="sidebar-overview">
+            <div class="sidebar-avatar">
+                
+                    <img src="/icons/avatar.gif"/>
+                
+            </div>
+            <div class="sidebar-author-name">John Doe</div>
+            <div class="sidebar-description"></div>
+        </div>
+        <div class="sidebar-links">
+            
+                
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon"><i class="iconfont icon-mail"></i></span>
+                    <a href="mailto:xxx@xxx.com" class="mdui-chip-title">E-Mail</a>
+                </div>
+            
+                
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon"><i class="iconfont icon-github"></i></span>
+                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">GitHub</a>
+                </div>
+            
+                
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon"><i class="iconfont icon-steam"></i></span>
+                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">Steam</a>
+                </div>
+            
+                
+                <div class="mdui-chip">
+                    <span class="mdui-chip-icon"><i class="iconfont icon-weibo"></i></span>
+                    <a target="_blank" rel="noopener" href="https://your.url" class="mdui-chip-title">Weibo</a>
+                </div>
+            
+        </div>
+        <ul class="mdui-list" mdui-collapse="{accordion: true}">
+            <li class="mdui-collapse-item">
+                <div class="mdui-collapse-item-header mdui-list-item mdui-ripple">
+                    <div class="mdui-list-item-icon">
+                        <i class="iconfont icon-link"></i>
+                    </div>
+                    <div class="mdui-list-item-content">Links</div>
+                    <div class="mdui-collapse-item-arrow">
+                        <i class="mdui-list-item-icon iconfont icon-angle-down"></i>
+                    </div>
+                </div>
+                <ul id="linksList" class="mdui-collapse-item-body mdui-list mdui-list-dense">
+                    
+                        <a target="_blank" rel="noopener" href="https://garybear.cn/hexo-theme-meadow/" class="mdui-list-item mdui-ripple">
+                            Meadow说明文档
+                        </a>
+                    
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <div class="mdui-divider"></div>
+    
+    
+</aside>
+  
+  <main id="main-contain" class="mdui-container mdui-m-t-5">
+    <article id="article" class="mdui-card mdui-p-b-2 mdui-m-b-5">
+  <header class="mdui-card-media">
+    
+    
+      <div class="post-header"> 
+  <a class="post-header-title" href="/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/">qiling框架学习</a>
+  <div class="post-header-meta">
+    <span>
+      <span class="iconfont icon-calendar"></span>
+      Posted on:&nbsp;2023-07-07
+    </span>
+    <span>
+      <span class="iconfont icon-calendar-check"></span>
+      Edited on:&nbsp;2023-07-07
+    </span>
+    <span>
+      <span class="iconfont icon-folder"></span>
+      In:&nbsp;
+    </span>
+    
+      <span>
+        <span class="iconfont icon-eye"></span>
+        Views:&nbsp;
+        <span id="busuanzi_container_page_pv"><span id="busuanzi_value_page_pv"></span></span>
+      </span>
+    
+  </div>
+</div>   
+    
+
+
+
+    
+    
+    <div class="mdui-card-menu">
+    
+      <button class="mdui-btn mdui-btn-icon mdui-text-color-teal" mdui-menu="{target: '#share_menu', align: 'right'}"><i class="iconfont icon-share"></i></button>
+      <ul class="mdui-menu" id="share_menu">
+        <li class="mdui-menu-item">
+          <a href="http://service.weibo.com/share/share.php?appkey=&title=qiling框架学习&url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/&pic=http://example.com/null&searchPic=false&style=simple" target="_blank" class="mdui-ripple">Share to Weibo</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="https://twitter.com/intent/tweet?text=qiling框架学习&url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/&via=John Doe" target="_blank" class="mdui-ripple">Share to Twitter</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="https://www.facebook.com/sharer/sharer.php?u=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" target="_blank" class="mdui-ripple">Share to Facebook</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="https://plus.google.com/share?url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" target="_blank" class="mdui-ripple">Share to Google+</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="https://www.linkedin.com/shareArticle?mini=true&url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/&title=qiling框架学习" target="_blank" class="mdui-ripple">Share to LinkedIn</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="http://connect.qq.com/widget/shareqq/index.html?site=Hexo&title=qiling框架学习&summary=&pics=http://example.com/null&url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" target="_blank" class="mdui-ripple">Share to QQ</a>
+        </li>
+        <li class="mdui-menu-item">
+          <a href="https://telegram.me/share/url?url=http://example.com/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/&text=qiling框架学习" target="_blank" class="mdui-ripple">Share to Telegram</a>
+        </li>
+      </ul>
+    
+  </div>
+  </header>
+  
+  
+  
+  
+  
+  <div class="mdui-card-content mdui-typo mdui-p-x-4">
+    <p><strong>Qiling是一款功能强大的高级代码模拟框架</strong></p>
 <p>很早就知道了qiling框架，一直想学但一直都忙于别的事情，这段时间打算开始学习qiling框架，记录一下学习的历程</p>
 <h2 id="0x1-运行程序"><a href="#0x1-运行程序" class="headerlink" title="0x1.运行程序"></a>0x1.运行程序</h2><p>编写一个简单的hello world程序，交叉编译为mipsel架构的，使用qiling来运行，脚本如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> sys</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> qiling.const <span class="keyword">import</span> QL_VERBOSE</span><br><span class="line">sys.path.append(<span class="string">&quot;..&quot;</span>)</span><br><span class="line"><span class="keyword">from</span> qiling <span class="keyword">import</span> *</span><br><span class="line"></span><br><span class="line"><span class="keyword">if</span> __name__ == <span class="string">&quot;__main__&quot;</span>:</span><br><span class="line">    ql=Qiling([<span class="string">&quot;./hello&quot;</span>],<span class="string">&quot;/usr/mipsel-linux-gnu&quot;</span>,verbose=QL_VERBOSE.DEFAULT)</span><br><span class="line">    ql.run()</span><br><span class="line">    </span><br></pre></td></tr></table></figure>
@@ -156,12 +448,151 @@
 
 <p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qk1g6f"><img src="https://s1.ax1x.com/2022/03/18/qk1g6f.png" alt="qk1g6f.png"></a><br>可以得到不同的回显。这里只是做一个示例，因为环境变量的设置需要仔细审计完代码才能按照要求设置，就不细看了。<br>另外提一嘴，qiling的debugger用起来体验并不好，无论是pwdbg还是gef远程连上去后都看不到寄存器，要调试的话还是得用qemu来</p>
 <h3 id="0x3-Tenda-AC15"><a href="#0x3-Tenda-AC15" class="headerlink" title="0x3.Tenda AC15"></a>0x3.Tenda AC15</h3><p>直接运行httpd的话会在check_network处卡住<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/qAKZm4"><img src="https://s1.ax1x.com/2022/03/19/qAKZm4.png" alt="qAKZm4.png"></a><br>一路追踪check_network，找到了最终调用的函数<br><a target="_blank" rel="noopener" href="https://imgtu.com/i/qAKJne"><img src="https://s1.ax1x.com/2022/03/19/qAKJne.png" alt="qAKJne.png"></a><br>get_eth_name传入的参数是0，所以check_network是要获取br0的ip，而我的虚拟机中并没有br0这个网卡</p>
-</div></article></div><div id="disqus_thread"></div></div><script>var disqus_shortname = 'l0ck';
-var disqus_identifier = '2023/07/07/qiling框架学习/';
-var disqus_title = 'qiling框架学习';
-var disqus_url = 'http://example.com/2023/07/07/qiling框架学习/';
-(function() {
-    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
-    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-})();</script><script id="dsq-count-scr" src="//l0ck.disqus.com/count.js" async></script></main><footer class="footer-container"><div class="paginator"><a href="/2023/09/14/musl-pwn/" class="prev">PREV</a></div><div class="copyright"><p>© 2017 - 2024 <a href="http://example.com">John Doe</a>, powered by <a href="https://hexo.io/" target="_blank">Hexo</a> and <a href="https://github.com/AngryPowman/hexo-theme-prontera" target="_blank">hexo-theme-prontera</a>.</p></div></footer><script>(function(b,o,i,l,e,r){b.GoogleAnalyticsObject=l;b[l]||(b[l]=function(){(b[l].q=b[l].q||[]).push(arguments)});b[l].l=+new Date;e=o.createElement(i);r=o.getElementsByTagName(i)[0];e.src='//www.google-analytics.com/analytics.js';r.parentNode.insertBefore(e,r)}(window,document,'script','ga'));ga('create',"angrypowman",'auto');ga('send','pageview');</script></body></html>
+
+  </div>
+  <!--文末结束语-->
+  
+    <div style="text-align:center;color: #ccc;font-size:24px;"> --- 本文结束 <i class="iconfont icon-heartbeat" style="font-size:24px;"></i> The End --- </div>
+  
+  <!--页脚广告-->
+  
+  <div class="mdui-divider"></div>
+  
+  <nav>
+    
+      <a rel="prev" class="post-nav-item mdui-float-left" href="/2023/09/14/musl-pwn/">
+        <i class="iconfont icon-angle-left"></i>
+        <span>musl pwn</span>
+      </a>
+    
+    
+  </nav>
+</article>
+
+
+
+
+  <div class="toc-button"  style="z-index: 100;">
+    <button class="mdui-fab mdui-ripple mdui-color-teal" mdui-menu="{target: '#toc'}"><i class="iconfont icon-list"></i></button>
+    <ul class="mdui-menu" id="toc">
+      <li class="mdui-menu-item">
+        <a href="/2023/07/07/qiling%E6%A1%86%E6%9E%B6%E5%AD%A6%E4%B9%A0/" id="toc-header" class="mdui-ripple">Table of Contents</a>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x1-%E8%BF%90%E8%A1%8C%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.</span> <span class="toc-text">0x1.运行程序</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x2-%E4%BD%BF%E7%94%A8qiling%E8%BF%9B%E8%A1%8C%E8%B0%83%E8%AF%95"><span class="toc-number">2.</span> <span class="toc-text">0x2 使用qiling进行调试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x3-%E4%BD%BF%E7%94%A8qiling-hook%E7%A8%8B%E5%BA%8F"><span class="toc-number">3.</span> <span class="toc-text">0x3.使用qiling hook程序</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-ql-hook-address"><span class="toc-number">3.1.</span> <span class="toc-text">0x1.ql.hook_address()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-ql-hook-code"><span class="toc-number">3.2.</span> <span class="toc-text">0x2. ql.hook_code()</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x4-qilinglab-x86"><span class="toc-number">4.</span> <span class="toc-text">0x4.qilinglab-x86</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-challenge1"><span class="toc-number">4.1.</span> <span class="toc-text">0x1.challenge1</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-challenge2"><span class="toc-number">4.2.</span> <span class="toc-text">0x2.challenge2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x3-challenge3"><span class="toc-number">4.3.</span> <span class="toc-text">0x3.challenge3</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x4-challenge4"><span class="toc-number">4.4.</span> <span class="toc-text">0x4.challenge4</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x5-challenge5"><span class="toc-number">4.5.</span> <span class="toc-text">0x5.challenge5</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x6-challenge6"><span class="toc-number">4.6.</span> <span class="toc-text">0x6.challenge6</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x7-challenge7"><span class="toc-number">4.7.</span> <span class="toc-text">0x7.challenge7</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x8-challenge8"><span class="toc-number">4.8.</span> <span class="toc-text">0x8.challenge8</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x9-challenge9"><span class="toc-number">4.9.</span> <span class="toc-text">0x9.challenge9</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0xA-challenge10"><span class="toc-number">4.10.</span> <span class="toc-text">0xA.challenge10</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0xB-challenge11"><span class="toc-number">4.11.</span> <span class="toc-text">0xB.challenge11</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x5-qilinglab-aarch64"><span class="toc-number">5.</span> <span class="toc-text">0x5 qilinglab-aarch64</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-challenge1-1"><span class="toc-number">5.1.</span> <span class="toc-text">0x1.challenge1</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x6-%E4%BD%BF%E7%94%A8qiling%E6%A8%A1%E6%8B%9F%E8%BF%90%E8%A1%8C%E8%B7%AF%E7%94%B1%E5%99%A8%E5%9B%BA%E4%BB%B6"><span class="toc-number">6.</span> <span class="toc-text">0x6.使用qiling模拟运行路由器固件</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#0x1-DIR816A2"><span class="toc-number">6.1.</span> <span class="toc-text">0x1.DIR816A2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x2-DAP1665"><span class="toc-number">6.2.</span> <span class="toc-text">0x2.DAP1665</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#0x3-Tenda-AC15"><span class="toc-number">6.3.</span> <span class="toc-text">0x3.Tenda AC15</span></a></li></ol></li></ol>
+      </li>
+    </ul>
+  </div>
+
+
+
+    <div id="comment" class="mdui-card mdui-p-a-2 mdui-m-b-5">
+      <div class="mdui-tab" mdui-tab>
+        
+          <a href="#comment-tab0" class="mdui-ripple">gitalk</a>
+        
+          <a href="#comment-tab1" class="mdui-ripple">livere</a>
+        
+      </div>
+      
+        <div id="comment-tab0" class="mdui-p-a-2">
+          <div id="gitalk-container"></div>
+<link rel="stylesheet" href="https://unpkg.com/gitalk/dist/gitalk.css">
+<script src="https://unpkg.com/gitalk/dist/gitalk.min.js"></script>
+<script src="//cdn.jsdelivr.net/npm/js-md5@0.7.3/src/md5.min.js"></script>
+<script>
+  var gitalk = new Gitalk({
+    clientID: '',
+    clientSecret: '',
+    repo: '',
+    owner: '',
+    admin: [''],
+    id:  md5(location.pathname) ,
+    distractionFreeMode: 'true',
+  });
+  gitalk.render('gitalk-container');
+</script>
+        </div>
+      
+        <div id="comment-tab1" class="mdui-p-a-2">
+          <div id="lv-container" data-id="city" data-uid="">
+  <script type="text/javascript">
+    (function (d, s) {
+      var j, e = d.getElementsByTagName(s)[0];
+      if (typeof LivereTower === 'function') { return; }
+      j = d.createElement(s);
+      j.src = 'https://cdn-city.livere.com/js/embed.dist.js';
+      j.async = true;
+      e.parentNode.insertBefore(j, e);
+    })(document, 'script');
+  </script>
+  <noscript>Please enable JavaScript to view the comments powered by LiveRe.</noscript>
+</div>
+        </div>
+      
+    </div>
+
+  </main>
+  <footer id="footer" class="mdui-text-center mdui-m-t-5 mdui-p-b-2 mdui-p-t-4 mdui-color-theme">
+  <div class="mdui-container">
+    <div class="mdui-row">
+      
+        <a href="https://beian.miit.gov.cn" rel="noopener" target="_blank"></a>
+      
+      <span>
+        &copy; 2015 - 2024 
+        
+          <span style="color:#d9333f" class="iconfont icon-heart"></span>
+        
+        John Doe
+      </span>
+    </div>
+    <div class="mdui-row">
+      
+        <div class="mdui-col-xs-6 mdui-text-right">
+          <span>Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a></span>
+        </div>
+        <div class="mdui-col-xs-6 mdui-text-left">
+          <span>Theme: <a href="https://github.com/kb1000fx/Meadow" rel="noopener" target="_blank">Meadow</a></span>
+        </div>
+      
+    </div>
+    <div class="mdui-row">
+      
+        <div class="mdui-col-xs-6 mdui-text-right">
+          <span id="busuanzi_container_site_uv" style="display: none;"> <span class="iconfont icon-user"></span>Total Visitors <span id="busuanzi_value_site_uv"></span></span>
+        </div>
+        <div class="mdui-col-xs-6 mdui-text-left">
+          <span id="busuanzi_container_site_pv" style="display: none;"> <span class="iconfont icon-eye"></span>Total Views <span id="busuanzi_value_site_pv"></span></span>
+        </div>
+      
+    </div>
+ </div>
+</footer>
+  
+  <button id="gotop" class="mdui-fab mdui-fab-fixed mdui-fab-hide mdui-ripple mdui-color-teal" style="z-index:100;"><i class="iconfont icon-arrowup"></i></button>
+  
+  
+
+    <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@8.4.8/dist/mermaid.min.js"></script>
+    <script>mermaid.initialize({
+        startOnLoad: true,
+        theme: "default"
+    });</script>
+
+
+
+
+    
+<script src="/js/mdui.min.v1.0.0.js"></script>
+
+
+
+
+<script src="/js/meadow.js"></script>
+
+</body>
+</html >
