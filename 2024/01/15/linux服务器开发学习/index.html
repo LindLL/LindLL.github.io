@@ -213,7 +213,7 @@
     </span>
     <span>
       <span class="iconfont icon-calendar-check"></span>
-      Edited on:&nbsp;2024-01-30
+      Edited on:&nbsp;2024-03-14
     </span>
     <span>
       <span class="iconfont icon-folder"></span>
@@ -269,38 +269,53 @@
   
   
   <div class="mdui-card-content mdui-typo mdui-p-x-4">
-    <h2 id="1-项目需求"><a href="#1-项目需求" class="headerlink" title="1.项目需求"></a>1.项目需求</h2><p>使用C语言作为开发语言，实现的功能有：</p>
+    <h2 id="1-项目需求"><a href="#1-项目需求" class="headerlink" title="1.项目需求"></a>1.项目需求</h2><p>使用C语言作为开发语言实现了一个简易的webserver——shttpd，实现的功能有：</p>
 <ul>
-<li>epoll+线程池实现高并发服务</li>
+<li>select IO多路复用</li>
 <li>动态配置</li>
 <li>CGI支持</li>
 <li>HTTP1.1支持</li>
 <li>静态网页响应</li>
-<li>……</li>
+<li>文件下载</li>
 </ul>
-<h2 id="2-线程池实现"><a href="#2-线程池实现" class="headerlink" title="2.线程池实现"></a>2.线程池实现</h2><p>线程池是典型的<strong>生产者-消费者</strong>模式，epoll是生产者，和客户端建立连接的过程就是生产的过程；线程池中的空闲线程就是消费者，用于处理新建立的连接。如下图所示</p>
-<img src="https://raw.githubusercontent.com/LindLL/blog-img/main/x.png" alt="x" style="zoom:150%;" />
+<h2 id="2-项目实现"><a href="#2-项目实现" class="headerlink" title="2.项目实现"></a>2.项目实现</h2><h4 id="2-1-项目架构"><a href="#2-1-项目架构" class="headerlink" title="2.1.项目架构"></a>2.1.项目架构</h4><p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403132215805.png" alt="架构"></p>
+<h4 id="2-2-动态配置"><a href="#2-2-动态配置" class="headerlink" title="2.2 动态配置"></a>2.2 动态配置</h4><p>shttpd使用命令行函数getopt_long接受简易的参数设定，如web根目录，cgi目录，开放端口以及最大客户端数量。</p>
+<h4 id="2-3-启动服务器"><a href="#2-3-启动服务器" class="headerlink" title="2.3 启动服务器"></a>2.3 启动服务器</h4><p>通过socket-bind-listen-accept启动服务器</p>
+<h4 id="2-4-网络事件处理"><a href="#2-4-网络事件处理" class="headerlink" title="2.4 网络事件处理"></a>2.4 网络事件处理</h4><p>使用select处理网络事件请求，为每一个请求分配一个子进程进行处理，如果此时子进程的数量大于预设的最大值就sleep，暂不处理请求；在父进程中使用waitpid回收子进程，父进程永不退出。</p>
+<h4 id="2-5-HTTP请求解析"><a href="#2-5-HTTP请求解析" class="headerlink" title="2.5 HTTP请求解析"></a>2.5 HTTP请求解析</h4><p>使用fgets遇到\n就停止读取的特性，循环读取HTTP请求的每一行，以空格将每一行进行分割提取值，并判断其是否合法；由于对于每个网络请求都分配一个子进程，因此使用全局变量来保存读取到的HTTP请求头的值，无需担心不同进程间出现干扰。提取完所有的请求头之后，判断请求方式，如果是POST请求则根据content-length字段的值来读取相应大小的content；接下来判断url是否为cgi请求，如果是普通文件则进入到文件发送的流程，如果为cgi请求则进入到cgi处理流程。</p>
+<h5 id="2-5-1-文件发送流程"><a href="#2-5-1-文件发送流程" class="headerlink" title="2.5.1 文件发送流程"></a>2.5.1 文件发送流程</h5><p>在文件发送流程中，首先根据请求的文件类型设定好响应头中的content-type；然后生成ETAG字段，比较请求头中的ETAG字段和此时生成的ETAG字段是否相同，相同的话则发送<code>Not Modified</code>响应；如果请求头中存在IfModifiedSince字段，则解析该字段为unix时间戳，和请求文件的最后修改时间戳进行比较，如果请求文件的最后修改时间戳大于等于<code>IfModifiedSince</code>字段的时间戳，则也发送<code>Not Modified</code>响应；接下来再打开请求文件，如果有<code>Range</code>字段，则根据Range字段发送相应大小的文件数据，如果没有则完整发送文件；发送文件使用<code>sendfile</code>零拷贝函数，直接在内核中进行拷贝，避免在用户态和内核态之间操作数据，提高效率。</p>
+<h5 id="2-5-2-CGI处理流程"><a href="#2-5-2-CGI处理流程" class="headerlink" title="2.5.2 CGI处理流程"></a>2.5.2 CGI处理流程</h5><p>如果是cgi请求，首先创建一个读管道in[2]，一个写管道out[2]，然后fork出子进程，子进程也会继承读写管道。</p>
+<p>父进程将数据通过管道发送给cgi子进程，cgi子进程处理完请求之后通过管道将结果写回给父进程，管道示意图如下所示</p>
+<img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141333119.png" alt="管道" style="zoom:150%;" />
 
-<p>生产者和消费者之间用一个队列进行连接，producer是epoll，consumer是线程池。生产者和消费者之间使用两个条件变量notfull和notempty进行同步，当taskqueue满之后，生产者停止生产，等待notfull信号到达之后继续生产；当taskqueue空之后，消费者停止消费，等待notempty信号到达之后继续消费。当生产者生产之后，发送信号notempty到消费者；当消费者消费之后，发送notfull信号到生产者。</p>
-<p>以上是生产者-消费者模式的工作流程。</p>
-<p>线程池要实现什么功能？</p>
-<ul>
-<li>事先创建一定的工作线程，无任务时阻塞等待，有任务时执行任务，执行完毕后继续阻塞；</li>
-<li>创建一个管理线程，用于动态调控线程池中的线程数量：当空闲任务数过多时，销毁多余的空闲线程；当任务数多余工作线程时，创建新的工作线程.</li>
-</ul>
-<p>线程池的结构体如下所示：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="class"><span class="keyword">struct</span></span></span><br><span class="line"><span class="class">&#123;</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> pool_mutex;        <span class="comment">// 锁住线程池</span></span><br><span class="line">    <span class="type">pthread_mutex_t</span> busycounter_mutex; <span class="comment">// 忙数量线程锁</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> not_full_cond;      <span class="comment">// 任务队列满条件变量</span></span><br><span class="line">    <span class="type">pthread_cond_t</span> not_empty_cond;     <span class="comment">// 任务队列空条件变量</span></span><br><span class="line"></span><br><span class="line">    <span class="type">pthread_t</span> *workers_tid; <span class="comment">// 存储工作线程id</span></span><br><span class="line">    <span class="type">pthread_t</span> manger_tid;   <span class="comment">// 存储管理线程id</span></span><br><span class="line"></span><br><span class="line">    <span class="type">threadpool_task_t</span> *task_queue; <span class="comment">// 任务队列</span></span><br><span class="line">    <span class="type">int</span> queue_max_size;            <span class="comment">// 队列最大容量</span></span><br><span class="line">    <span class="type">int</span> queue_cur_size;            <span class="comment">// 队列当前容量</span></span><br><span class="line">    <span class="type">int</span> queue_front;               <span class="comment">// 队头</span></span><br><span class="line">    <span class="type">int</span> queue_rear;                <span class="comment">// 队尾</span></span><br><span class="line"></span><br><span class="line">    <span class="type">uint32_t</span> min_thread_num;       <span class="comment">// 线程池最小线程数</span></span><br><span class="line">    <span class="type">uint32_t</span> max_thread_num;       <span class="comment">// 线程池最大线程数</span></span><br><span class="line">    <span class="type">uint32_t</span> busy_thread_num;      <span class="comment">// 在忙线程数</span></span><br><span class="line">    <span class="type">uint32_t</span> alive_thread_num;     <span class="comment">// 存活线程数</span></span><br><span class="line">    <span class="type">uint32_t</span> wait_des_threaad_num; <span class="comment">// 等待销毁的线程数</span></span><br><span class="line"></span><br><span class="line">&#125; <span class="type">threadpool_t</span>;</span><br></pre></td></tr></table></figure>
+<p>上图是fork出子进程之后的管道图，还需要关闭不需要的管道描述符。</p>
+<img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141339366.png" alt="管道2" style="zoom:150%;" />
 
-<p>一共有如下几个函数：</p>
-<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="type">threadpool_t</span> *<span class="title function_">threadpool_create</span><span class="params">(<span class="type">uint32_t</span> min_thread_num, <span class="type">uint32_t</span> max_thread_num, <span class="type">uint32_t</span> queue_max_size)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">work_thread</span><span class="params">(<span class="type">void</span> *pool)</span>;</span><br><span class="line"><span class="type">void</span> *<span class="title function_">manger_thread</span><span class="params">(<span class="type">void</span> *pool)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">isThreadAlive</span><span class="params">(<span class="type">pthread_t</span> tid)</span>;</span><br><span class="line"><span class="type">int</span> <span class="title function_">threadpool_add_task</span><span class="params">(<span class="type">threadpool_t</span> *pool, <span class="type">void</span> *function(<span class="type">void</span> *), <span class="type">void</span> *arg)</span>;</span><br><span class="line"><span class="type">void</span> <span class="title function_">threadpool_destroy</span><span class="params">(<span class="type">threadpool_t</span> *threadpool)</span>;</span><br></pre></td></tr></table></figure>
-
-<p>实际上，这里的线程池结构体包含了任务队列和真正的线程池。</p>
-<ul>
-<li>多线程的操作需要注意加锁解锁，比如对<code>busy_thread_num</code>，<code>alive_thread_num</code>，<code>wait_des_threaad_num</code>等等所有的这些线程池成员变量进行操作时，需要先锁住整个结构体，防止其他线程对其进行操作；</li>
-<li>任务队列采用的是环形队列的数据结构，从队列尾部添加任务，当队列中有任务时就发送<code>not_empty_cond</code>信号唤醒阻塞中的线程，线程被唤醒之后首先检查是否满足被销毁的条件，满足则销毁，不满足则从队列头取出一个任务进行执行，然后发出<code>not_full_cond</code>信号表明任务队列没有满可以继续放任务；</li>
-<li>在往消息队列中添加任务时，如果队列已满，就阻塞，直到接收到<code>not_full_cond</code>信号，再继续添加任务；</li>
-<li><code>manger_thread</code>定时执行，每次都会检查当前存活的线程数和正在忙的线程数以及任务队列中的任务数，如果任务数太多，就会创建新的线程，我在这里选择的是存活的线程数和任务数的差值的一半作为新建的线程数；如果忙线程数比存活的线程数少很多，就说明很多线程处于空闲状态，可以销毁一定数量线程减小开销；</li>
-</ul>
+<p>这里的In和Out两个管道都是相对于子进程而言的，将子进程的In的读端重定向到标准输入，将写端重定向到标准输出，这样就可以通过printf等标准输出输入函数直接从父进程中读取数据或者往父进程中写入数据。</p>
+<p>CGI程序从环境变量中获取数据，因此在执行cgi之前，还需要设置好环境变量，然后调用execl系列函数启动cgi程序</p>
+<h2 id="3-项目效果"><a href="#3-项目效果" class="headerlink" title="3.项目效果"></a>3.项目效果</h2><p>项目内嵌了3个html页面和一个用于测试的cgi程序，访问默认端口会返回index.html页面</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141406164.png" alt="image-20240314140605332"></p>
+<p>访问download.html会返回下载页面，点击下载链接会下载一个压缩包</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141407395.png" alt="image-20240314140720040"></p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141408581.png" alt="image-20240314140827736"></p>
+<p>访问calc.html用于调用后端的cgi</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141409303.png" alt="image-20240314140903213"></p>
+<p>cgi实现了简单的加减法功能，计算完毕后会将结果返回到浏览器中</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141409818.png" alt="image-20240314140940317"></p>
+<h2 id="4-压力测试"><a href="#4-压力测试" class="headerlink" title="4.压力测试"></a>4.压力测试</h2><p>使用webbench进程压力测试</p>
+<p>使用7000并发量测试30s，存在9个failed</p>
+<p><img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240314141700941.png" alt="image-20240314141700941"></p>
+<p>使用7000并发量测试10s，全部通过</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141419382.png" alt="image-20240314141903412"></p>
+<p>也可以通过-m参数指定webserver的最大并发量，默认是50，将其设置为100</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141424248.png" alt="image-20240314142359816"></p>
+<p>有所提升，不过并发量不能设置太大，因为每一个并发都是一个子进程，对系统资源是很大的占用。</p>
+<h2 id="5-系统资源占用"><a href="#5-系统资源占用" class="headerlink" title="5.系统资源占用"></a>5.系统资源占用</h2><p>没有访问的情况下，shttpd对CPU资源的占用量极低</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141438406.png" alt="image-20240314143822936"></p>
+<p>在使用webbench测试时，占用量如下</p>
+<p><img src="https://raw.githubusercontent.com/LindLL/blog-img/main/202403141437612.png" alt="image-20240314143750925"></p>
+<p>限制shttpd并发量为100，webbench并发量为7000。</p>
+<p>可以看到对于内存的占用实际上也没有那么多，从2.20G增长到了2.32G</p>
 
   </div>
   <!--文末结束语-->
@@ -330,7 +345,7 @@
     <ul class="mdui-menu" id="toc">
       <li class="mdui-menu-item">
         <a href="/2024/01/15/linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E5%BC%80%E5%8F%91%E5%AD%A6%E4%B9%A0/" id="toc-header" class="mdui-ripple">Table of Contents</a>
-        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82"><span class="toc-number">1.</span> <span class="toc-text">1.项目需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%BA%BF%E7%A8%8B%E6%B1%A0%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">2.线程池实现</span></a></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E9%9C%80%E6%B1%82"><span class="toc-number">1.</span> <span class="toc-text">1.项目需求</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%A1%B9%E7%9B%AE%E5%AE%9E%E7%8E%B0"><span class="toc-number">2.</span> <span class="toc-text">2.项目实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E9%A1%B9%E7%9B%AE%E6%9E%B6%E6%9E%84"><span class="toc-number">2.0.1.</span> <span class="toc-text">2.1.项目架构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-%E5%8A%A8%E6%80%81%E9%85%8D%E7%BD%AE"><span class="toc-number">2.0.2.</span> <span class="toc-text">2.2 动态配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-%E5%90%AF%E5%8A%A8%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">2.0.3.</span> <span class="toc-text">2.3 启动服务器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-%E7%BD%91%E7%BB%9C%E4%BA%8B%E4%BB%B6%E5%A4%84%E7%90%86"><span class="toc-number">2.0.4.</span> <span class="toc-text">2.4 网络事件处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-HTTP%E8%AF%B7%E6%B1%82%E8%A7%A3%E6%9E%90"><span class="toc-number">2.0.5.</span> <span class="toc-text">2.5 HTTP请求解析</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-5-1-%E6%96%87%E4%BB%B6%E5%8F%91%E9%80%81%E6%B5%81%E7%A8%8B"><span class="toc-number">2.0.5.1.</span> <span class="toc-text">2.5.1 文件发送流程</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-5-2-CGI%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">2.0.5.2.</span> <span class="toc-text">2.5.2 CGI处理流程</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%A1%B9%E7%9B%AE%E6%95%88%E6%9E%9C"><span class="toc-number">3.</span> <span class="toc-text">3.项目效果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="toc-number">4.</span> <span class="toc-text">4.压力测试</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%B3%BB%E7%BB%9F%E8%B5%84%E6%BA%90%E5%8D%A0%E7%94%A8"><span class="toc-number">5.</span> <span class="toc-text">5.系统资源占用</span></a></li></ol>
       </li>
     </ul>
   </div>
